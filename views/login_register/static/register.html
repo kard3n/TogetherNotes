@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+
+
+    {% set error_msg_list = get_flash_messages() %}
+    {% if error_msg_list %}
+    <div id="divError">
+        {% for error in error_msg_list %}
+            { error }
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h1>register</h1>
+    <form action="/register" method="post">
+        <label for="username">NAME:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="email">EMAIL:</label>
+        <input type="text" id="email" name="email" required><br>
+        <label for="password">PASSWORD:</label>
+        <input type="text" id="password" name="password" required><br>
+
+        <input type="submit" value="Log in">
+    </form>
+</body>
+</html>
