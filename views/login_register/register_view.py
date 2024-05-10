@@ -1,6 +1,7 @@
 import flask
 import flask_login
 import sirope
+from sirope import Sirope
 
 from model.UserDTO import UserDTO
 
@@ -23,32 +24,33 @@ register_blprint, srp = get_blprint()
 @register_blprint.route("/", methods=["GET", "POST"])
 def register():
     if flask.request.method == "GET":
-        return flask.send_from_directory(
-            register_blprint.static_folder, "register.html"
+        return flask.render_template(
+            "register.html"
         )
     else:
-        name = flask.request.form.get("name")
+        name = flask.request.form.get("username")
         email = flask.request.form.get("email")
         password = flask.request.form.get("password")
 
         if not email:
             flask.flash("Please enter an email address.")
-            return flask.redirect("/")
+            return flask.redirect("/register")
 
         if not password:
             flask.flash("Please enter a password.")
-            return flask.redirect("/")
+            return flask.redirect("/register")
 
         if not name:
             flask.flash("Please enter a name.")
-            return flask.redirect("/")
+            return flask.redirect("/register")
 
         usr = UserDTO.find(srp, email)
         if usr:
             flask.flash("Email address already in use. Please try with another.")
-            return flask.redirect("/")
+            return flask.redirect("/register")
 
         usr = UserDTO(email=email, password=password, name=name)
+        srp.save(usr)
         flask_login.login_user(usr)
 
         return flask.redirect("/my_lists", code=200)

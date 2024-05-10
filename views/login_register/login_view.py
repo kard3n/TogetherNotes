@@ -10,7 +10,7 @@ def get_blprint():
         "login",
         __name__,
         url_prefix="/login",
-        template_folder="templates",
+        template_folder="views/login_register/templates",
         static_folder="static",
     )
     syrp = sirope.Sirope()
@@ -23,22 +23,23 @@ login_blprint, srp = get_blprint()
 @login_blprint.route("/", methods=["GET", "POST"])
 def login():
     if flask.request.method == "GET":
-        return flask.send_from_directory(login_blprint.static_folder, "login.html")
+        return flask.render_template("login.html")
     else:
         email = flask.request.form.get("email")
         password = flask.request.form.get("password")
         if not email:
             flask.flash("Please enter an email address")
-            return flask.redirect("/")
+            return flask.redirect("/login")
 
         if not password:
             flask.flash("Please enter a password")
-            return flask.redirect("/")
+            return flask.redirect("/login")
 
         usr = UserDTO.find(srp, email)
-        if not usr or usr.chk_password(password):
+        if not usr or not usr.chk_password(password):
+            print(usr)
             flask.flash("Username and or email invalid. Please try again.")
-            return flask.redirect("/")
+            return flask.redirect("/login")
 
         flask_login.login_user(usr)
 

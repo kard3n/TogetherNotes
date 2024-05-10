@@ -7,14 +7,15 @@
 <body>
 
 
-    {% set error_msg_list = get_flash_messages() %}
-    {% if error_msg_list %}
-    <div id="divError">
-        {% for error in error_msg_list %}
-            { error }
-        {% endfor %}
-    </div>
-    {% endif %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
     <h1>Log-in</h1>
     <form action="/login" method="post">
