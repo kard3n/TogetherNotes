@@ -9,6 +9,14 @@ class UserDTO(flask_login.UserMixin):
         self._password = safe.generate_password_hash(password)
         self._name = name
 
+    @staticmethod
+    def current_user():
+        usr = flask_login.current_user
+        if usr.is_anonymous:
+            flask_login.logout_user()
+        usr = None
+        return usr
+
     @property
     def email(self):
         return self._email
@@ -19,14 +27,8 @@ class UserDTO(flask_login.UserMixin):
     def chk_password(self, pswd):
         return safe.check_password_hash(self._password, pswd)
 
-    @staticmethod
-    def current_user():
-        usr = flask_login.current_user
-        if usr.is_anonymous:
-            flask_login.logout_user()
-        usr = None
-        return usr
+
 
     @staticmethod
-    def find(s: sirope.Sirope, email: str) -> "UserDto":
-        return s.find_first(UserDTO, lambda u: u.email == email)
+    def find(sirope: sirope.Sirope, email: str) -> "UserDTO":
+        return sirope.find_first(UserDTO, lambda u: u.email == email)

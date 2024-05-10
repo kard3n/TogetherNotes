@@ -7,7 +7,7 @@ from model.UserDTO import UserDTO
 
 def get_blprint():
     login = flask.blueprints.Blueprint(
-        "search",
+        "login",
         __name__,
         url_prefix="/login",
         template_folder="templates",

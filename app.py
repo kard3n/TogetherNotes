@@ -5,7 +5,8 @@ import flask_login
 import sirope
 from flask_login import login_manager
 
-from model import UserDTO
+from model.UserDTO import UserDTO
+from views.login_register import login_view, register_view
 
 
 def create_app():
@@ -13,6 +14,11 @@ def create_app():
     fapp = flask.Flask(__name__)
     syrp = sirope.Sirope()
     fapp.config.from_file("config.json", load=json.load)
+
+    # register blueprints
+    fapp.register_blueprint(login_view.login_blprint)
+    fapp.register_blueprint(register_view.register_blprint)
+
     lmanager.init_app(fapp)
     return fapp, lmanager, syrp
 

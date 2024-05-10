@@ -7,7 +7,7 @@ from model.UserDTO import UserDTO
 
 def get_blprint():
     register = flask.blueprints.Blueprint(
-        "search",
+        "register",
         __name__,
         url_prefix="/register",
         template_folder="templates",
