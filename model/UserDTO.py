@@ -10,12 +10,20 @@ class UserDTO(flask_login.UserMixin):
         self._name = name
 
     @staticmethod
-    def current_user():
+    def current_user() -> "UserDTO":
         usr = flask_login.current_user
         if usr.is_anonymous:
             flask_login.logout_user()
-        usr = None
+            usr = None
         return usr
+
+    @property
+    def oid(self):
+        return self.__oid__.num
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @property
     def email(self):
@@ -26,8 +34,6 @@ class UserDTO(flask_login.UserMixin):
 
     def chk_password(self, pswd):
         return safe.check_password_hash(self._password, pswd)
-
-
 
     @staticmethod
     def find(sirope: sirope.Sirope, email: str) -> "UserDTO":

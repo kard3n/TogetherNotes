@@ -1,7 +1,6 @@
 import flask
 import flask_login
 import sirope
-from sirope import Sirope
 
 from model.UserDTO import UserDTO
 
@@ -24,9 +23,7 @@ register_blprint, srp = get_blprint()
 @register_blprint.route("/", methods=["GET", "POST"])
 def register():
     if flask.request.method == "GET":
-        return flask.render_template(
-            "register.html"
-        )
+        return flask.render_template("register.html")
     else:
         name = flask.request.form.get("username")
         email = flask.request.form.get("email")
@@ -51,6 +48,5 @@ def register():
 
         usr = UserDTO(email=email, password=password, name=name)
         srp.save(usr)
-        flask_login.login_user(usr)
 
-        return flask.redirect("/my_lists", code=200)
+        return flask.redirect("/home", code=200)

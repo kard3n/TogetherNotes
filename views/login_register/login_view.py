@@ -43,4 +43,4 @@ def login():
 
         flask_login.login_user(usr)
 
-        return flask.redirect("/my_lists", code=200)
+        return flask.redirect("/home", code=200)

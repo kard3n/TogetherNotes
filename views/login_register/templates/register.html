@@ -3,30 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
-
+<div class="container">
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class=flashes>
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
+    {% if messages %}
+    <div class="alert alert-warning">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
     {% endwith %}
 
-    <h1>register</h1>
-    <form action="/register" method="post">
-        <label for="username">NAME:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="email">EMAIL:</label>
-        <input type="text" id="email" name="email" required><br>
-        <label for="password">PASSWORD:</label>
-        <input type="text" id="password" name="password" required><br>
+    <h1 class="text-center">Register</h1>
+    <form action="/register" method="post" class="mt-5">
+        <div class="form-group">
+            <label for="username">Name:</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password" class="form-control" required>
+        </div>
 
-        <input type="submit" value="Log in">
+        <button type="submit" class="btn btn-primary">Log in</button>
     </form>
+</div>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
