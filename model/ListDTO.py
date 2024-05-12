@@ -41,3 +41,11 @@ class ListDTO:
     @staticmethod
     def find(sirope: sirope.Sirope, oid: int) -> "ListDTO":
         return sirope.find_first(ListDTO, lambda l: l.__oid__.num == oid)
+
+    def find_for_user(sirope: sirope.Sirope, user_oid: int) -> ["ListDTO"]:
+        return [
+            item
+            for item in sirope.filter(
+                ListDTO, lambda l: user_oid in l.users_with_access
+            )
+        ]

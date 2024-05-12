@@ -6,6 +6,7 @@ import sirope
 from flask_login import login_manager
 
 from model.UserDTO import UserDTO
+from views.home import home_view
 from views.list import list_view
 from views.list_item import list_item_view
 from views.login_register import login_view, register_view
@@ -22,6 +23,7 @@ def create_app():
     fapp.register_blueprint(register_view.register_blprint)
     fapp.register_blueprint(list_view.list_blueprint)
     fapp.register_blueprint(list_item_view.list_item_blueprint)
+    fapp.register_blueprint(home_view.home_blueprint)
 
     lmanager.init_app(fapp)
     return fapp, lmanager, syrp

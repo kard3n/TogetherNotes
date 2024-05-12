@@ -44,7 +44,7 @@ def create_list():
         new_list = ListDTO(name=name, description=description, owner_oid=usr.oid)
         srp.save(new_list)
 
-        return flask.redirect(f"/list/{new_list.oid}", code=200)
+        return flask.redirect(f"/list/{new_list.oid}", code=301)
 
 
 @flask_login.login_required
@@ -62,8 +62,6 @@ def show_list(list_id):
         return flask.redirect("/home")
 
     item_list = ListItemDTO.find_for_list(srp, int(list_id))
-
-    print(item_list)
 
     data = {"list": current_list, "items": item_list}
     return flask.render_template("show_list.html", **data)

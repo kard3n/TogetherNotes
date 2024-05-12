@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Todo List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Hello, {{ user.name }}</h1>
+        <h3>How are you today?</h3>
+        {% for list in lists %}
+            <div class="card mb-3">
+                <div class="card-body row align-items-center">
+                    <div class="col-auto text-center">
+                        {% if list.owner_oid == user.oid %}
+                            <i class="bi bi-unlock-fill"></i> <!-- Open lock icon -->
+                        {% else %}
+                            <i class="bi bi-lock-fill"></i> <!-- Closed lock icon -->
+                        {% endif %}
+                    </div>
+                    <h5 class="card-title col-auto font-weight-bold">{{ list.name }}</h5>
+                    <p class="card-text col">{{ list.description }}</p>
+                    <div class="col-auto ml-auto text-right">
+                        <a href="/list/{{ list.oid }}" class="btn btn-primary">Show</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+
+
+    </div>
+</body>
+</html>

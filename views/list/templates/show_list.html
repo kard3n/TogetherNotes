@@ -3,7 +3,7 @@
 <head>
     <title>Todo List</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -12,9 +12,10 @@
         <h3>{{ list.description }}</h3>
         <ul class="list-group">
             {% for item in items %}
-            <li class="list-group-item">
-                <input type="checkbox" id="{{ item.oid }}" {% if item.checked %}checked{% endif %} onchange="check('{{ item.oid }}', this.checked)">
+            <li class="list-group-item" id="item_{{ item.oid }}">
+                <input type="checkbox" id="{{ item.oid }}" {% if item.checked %}checked{% endif %} onclick="check('{{ item.oid }}', this.checked)">
                 <label for="{{ item.oid }}">{{ item.content }}</label>
+                <button onclick="remove('{{ item.oid }}')">Delete</button>
             </li>
             {% endfor %}
         </ul>
@@ -34,9 +35,17 @@
     </div>
     <script>
         function check(oid, checked) {
-            var endpoint = checked ? '/check' : '/uncheck';
-            $("#" + oid).checked = true
-            $.post(endpoint, { oid: oid });
+            var endpoint = "/list_item/check/";
+            $("#" + oid).checked = checked
+            $.post(endpoint, { oid: oid , checked: checked});
+            //alert($("#" + oid).prop("checked"))
+            //alert(checked)
+        }
+
+        function remove(oid) {
+            var endpoint = "/list_item/delete/";
+            $.post(endpoint, { oid: oid});
+            $("#item_" + oid).remove()
         }
     </script>
 </body>

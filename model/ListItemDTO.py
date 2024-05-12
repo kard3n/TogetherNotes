@@ -26,6 +26,10 @@ class ListItemDTO:
     def content(self):
         return self._content
 
+    @property
+    def checked(self):
+        return self._checked
+
     def __str__(self):
         return f'{self.parent_oid}: "{self.content}"'
 
@@ -35,3 +39,7 @@ class ListItemDTO:
             item
             for item in sirope.filter(ListItemDTO, lambda l: l.parent_oid == parent_oid)
         ]
+
+    @staticmethod
+    def find(sirope: sirope.Sirope, oid: int) -> "ListItemDTO":
+        return sirope.find_first(ListItemDTO, lambda l: l.oid == oid)

@@ -49,4 +49,4 @@ def register():
         usr = UserDTO(email=email, password=password, name=name)
         srp.save(usr)
 
-        return flask.redirect("/home", code=200)
+        return flask.redirect("/home", code=301)
