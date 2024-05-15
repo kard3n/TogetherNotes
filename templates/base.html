@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    </head>
+    <body data-bs-theme="dark">
+        <nav class="navbar navbar-expand-lg" >
+            <div class="container-fluid">
+                {% if request.path not in ["/home/"] %}
+                <button class="btn btn-primary px-3" onclick="history.back();">
+                    <i class="bi bi-arrow-left img-fluid"></i>
+                </button>
+                {% else %}
+                    <a class="btn btn-primary px-3" href="/home/">
+                        <i class="bi bi-house"></i>
+                    </a>
+                {% endif %}
+                <a class="navbar-brand flex-grow-1 ms-3" href="/home">Do Together</a>
+                <div class="nav-item dropdown-right d-flex me-1">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person"></i>
+                    {{ user.name }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item btn btn-danger" href="/logout"><i class="bi bi-box-arrow-left"></i> Logout</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-warning">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>

@@ -5,6 +5,7 @@ from flask import Response
 
 from model.ListDTO import ListDTO
 from model.ListItemDTO import ListItemDTO
+from model.ListItemEditDTO import ListItemEditDTO
 from model.UserDTO import UserDTO
 
 
@@ -48,12 +49,14 @@ def create_item():
         return flask.redirect("/home/")
     else:
         srp.save(new_item)
+        edit = ListItemEditDTO(parent_oid=new_item.oid, user_oid=usr.oid, action="add")
+        srp.save(edit)
         return flask.redirect("/list/" + parent_list_oid, code=301)
 
 
 @flask_login.login_required
-@list_item_blueprint.route("/delete/", methods=["POST"])
-def delete_item():
+@list_item_blueprint.route("/disable/", methods=["POST"])
+def disable_item():
     usr = UserDTO.current_user()
     item_oid = flask.request.form.get("oid")
 
@@ -62,7 +65,12 @@ def delete_item():
     if item:
         parent_list = ListDTO.find(srp, item.parent_oid)
         if usr.oid in parent_list.users_with_access:
-            srp.delete(item.__oid__)
+            edit = ListItemEditDTO(
+                parent_oid=item.oid, user_oid=usr.oid, action="disable"
+            )
+            item.disabled = True
+            srp.save(item)
+            srp.save(edit)
         else:
             flask.flash("Access to item denied.")
         return flask.Response(status=201)
@@ -84,8 +92,34 @@ def check_item():
         and usr.oid in ListDTO.find(srp, int(current_item.parent_oid)).users_with_access
     ):
         current_item.checked = True if checked == "true" else False
+        edit = ListItemEditDTO(
+            parent_oid=current_item.oid,
+            user_oid=usr.oid,
+            action="check" if current_item.checked else "uncheck",
+        )
+
         srp.save(current_item)
+        srp.save(edit)
         return Response(status=201)
     else:
         flask.flash("Invalid parent or access denied.")
         return flask.redirect("/home/")
+
+
+@flask_login.login_required
+@list_item_blueprint.route("/<item_oid>", methods=["GET"])
+def show_item(item_oid):
+    usr = UserDTO.current_user()
+
+    item = ListItemDTO.find(srp, int(item_oid))
+
+    if not item or usr.oid not in ListDTO.find(srp, item.parent_oid).users_with_access:
+        flask.flash("Invalid item or access denied.")
+        return flask.redirect("/home/")
+    else:
+        data = {
+            "user": usr,
+            "item": item,
+            "edits_list": ListItemEditDTO.find_for_item(srp, item.oid),
+        }
+        return flask.render_template("show_item.html", **data)

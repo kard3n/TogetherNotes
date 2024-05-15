@@ -63,5 +63,5 @@ def show_list(list_id):
 
     item_list = ListItemDTO.find_for_list(srp, int(list_id))
 
-    data = {"list": current_list, "items": item_list}
+    data = {"list": current_list, "items": item_list, "user": usr}
     return flask.render_template("show_list.html", **data)

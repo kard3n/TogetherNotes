@@ -9,6 +9,7 @@ class ListItemDTO:
         self._creation_time = datetime.now()
         self._content = content
         self._checked = checked
+        self._disabled = False
 
     @property
     def oid(self):
@@ -29,6 +30,18 @@ class ListItemDTO:
     @property
     def checked(self):
         return self._checked
+
+    @checked.setter
+    def checked(self, value):
+        self._checked = value
+
+    @property
+    def disabled(self):
+        return self._disabled if self._disabled is not None else False
+
+    @disabled.setter
+    def disabled(self, value):
+        self._disabled = value
 
     def __str__(self):
         return f'{self.parent_oid}: "{self.content}"'

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Item Details{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="my-4">History for "{{ item.content }}"</h1>
+        <div class="card card-body">
+            <ul class="list-group">
+                {% for edit in edits_list %}
+                        <li class="list-group-item" id="item_{{ edit.oid }}">
+                            {{user.name}}: {{edit.creation_time}}, {{edit.action}}.
+                            {% if edit.before != None %}
+                                {{ edit.before }}
+                            {% else %}
+                                None
+                            {% endif %}
+                            -->
+                            {% if edit.after != None %}
+                                {{ edit.after }}
+                            {% else %}
+                                None
+                            {% endif %}
+                        </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+{% endblock %}
