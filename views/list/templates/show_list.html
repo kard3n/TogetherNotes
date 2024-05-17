@@ -9,24 +9,37 @@
         </div>
 
         <div class="card card-body">
-            <ul class="list-group">
+            <!--<ul class="list-group">-->
                 {% for item in items %}
                     {% if not item.disabled %}
-                        <li class="list-group-item" id="item_{{ item.oid }}">
-                            <div class="d-flex">
-                                <input type="checkbox" id="{{ item.oid }}" {% if item.checked %}checked{% endif %} onclick="check('{{ item.oid }}', this.checked)">
-                                <label class="flex-grow-1 ps-2 my-auto" for="{{ item.oid }}">{{ item.content }}</label>
-                                <button class="btn btn-danger mx-3" id="remove_button_{{ item.oid }}" onclick="remove('{{ item.oid }}')">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                                <a class="btn btn-primary" href="/list_item/{{ item.oid }}" role="button">
-                                    <i class="bi bi-list"></i>
-                                </a>
-                            </div>
-                        </li>
+
+                        <div class="d-flex mb-3" id="item_{{ item.oid }}">
+                            <input type="checkbox" id="checkbox_{{ item.oid }}" {% if item.checked %}checked{% endif %} onclick="check('{{ item.oid }}', this.checked)">
+                            <label class="visually-hidden" for="checkbox_{{ item.oid }}">Checkbox</label>
+                            <form class="row ms-1 align-items-center flex-grow-1">
+                                <div class="col-12">
+                                    <label class="visually-hidden" for="text_input_{{ item.oid }}">Content</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="text_input_{{ item.oid }}" placeholder="Something to do" onKeyUp="activate_edit('{{ item.oid }}')" data-original_value="{{ item.content }}" value="{{ item.content }}">
+                                        <div class="input-group-text btn btn-danger" id="reset_button_{{ item.oid }}" onclick="reset_item('{{ item.oid }}')" style="display:none;">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </div>
+                                        <div class="input-group-text btn btn-success" id="edit_button_{{ item.oid }}" onclick="edit('{{ item.oid }}')" style="display:none;">
+                                            <i class="bi bi-check2"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <button class="btn btn-danger mx-3" id="remove_button_{{ item.oid }}" onclick="remove('{{ item.oid }}')">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                            <a class="btn btn-primary" href="/list_item/{{ item.oid }}" role="button">
+                                <i class="bi bi-list"></i>
+                            </a>
+                        </div>
                     {% endif %}
                 {% endfor %}
-            </ul>
+            <!--</ul>-->
         </div>
 
         <button class="btn btn-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#disabledItemCollapse">
@@ -34,22 +47,26 @@
         </button>
 
         <div class="collapse" id="disabledItemCollapse">
-            <div class="card card-body">
-                <ul class="list-group" id="disabledItemsContainer">
+            <div class="card card-body" id="disabledItemsContainer">
                     {% for item in items %}
                         {% if item.disabled %}
-                            <li class="list-group-item" id="item_{{ item.oid }}">
-                            <div class="d-flex">
-                                <input type="checkbox" id="{{ item.oid }}" {% if item.checked %}checked{% endif %} disabled="disabled">
-                                <label class="flex-grow-1 ps-2 my-auto" for="{{ item.oid }}">{{ item.content }}</label>
-                                <a class="btn btn-primary" href="/list_item/{{ item.oid }}" role="button">
-                                    <i class="bi bi-list"></i>
-                                </a>
-                            </div>
-                        </li>
+                        <div class="d-flex mb-3" id="item_{{ item.oid }}">
+                            <input type="checkbox" id="checkbox_{{ item.oid }}" {% if item.checked %}checked{% endif %} disabled="disabled">
+                            <label class="visually-hidden" for="checkbox_{{ item.oid }}">Checkbox</label>
+                            <form class="row ms-1 align-items-center flex-grow-1">
+                                <div class="col-12">
+                                    <label class="visually-hidden" for="text_input_{{ item.oid }}">Content</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="text_input_{{ item.oid }}" placeholder="Something to do" value="{{ item.content }}" disabled="disabled">
+                                    </div>
+                                </div>
+                            </form>
+                            <a class="btn btn-primary" href="/list_item/{{ item.oid }}" role="button">
+                                <i class="bi bi-list"></i>
+                            </a>
+                        </div>
                         {% endif %}
                     {% endfor %}
-                </ul>
             </div>
         </div>
 
@@ -72,16 +89,17 @@
         </form>
     </div>
 
-    <div class="d-flex flex-row-reverse z-2 fixed-bottom">
+    <div class="d-flex flex-row-reverse z-2 fixed-bottom" style="pointer-events: none;">
         {% if user.oid == list.owner_oid %}
-            <a href="/invite/new/{{ list.oid }}" class="btn btn-primary m-4"><i class="bi bi-share h1"></i></a>
+            <!-- style="pointer-events: none;" causes the item to be clickable, even if its parent is not -->
+            <a href="/invite/new/{{ list.oid }}" class="btn btn-primary m-4" style="pointer-events: auto;"><i class="bi bi-share h1"></i></a>
         {% endif %}
     </div>
 
     <script>
         function check(oid, checked) {
             var endpoint = "/list_item/check/";
-            $("#" + oid).checked = checked
+            $("#checkbox_" + oid).checked = checked
             $.post(endpoint, { "oid": oid , "checked": checked}).done(function () {
                 $("#" + oid).checked = checked
             }).fail(function () {
@@ -94,10 +112,45 @@
             $.post(endpoint, { oid: oid}).done(function () {
                 $("#remove_button_" + oid).hide()
                 $("#item_" + oid).appendTo("#disabledItemsContainer");
+                $("#checkbox_" + oid).prop('disabled', true);
+                $("#text_input_" + oid).prop('disabled', true);
             }).fail(function () {
                 make_toast("Error", "Error removing list item.")
             });
 
+        }
+
+        function activate_edit(oid) {
+            $("#edit_button_" + oid).show()
+            $("#reset_button_" + oid).show()
+        }
+
+        function edit(oid) {
+            var endpoint = "/list_item/edit/";
+            var input = $("#text_input_" + oid)
+
+
+            if(input.val() != ""){
+                $.post(endpoint, { "item_oid": oid, "new_content": input.val()}).done(function () {
+                    $("#edit_button_" + oid).hide()
+                    $("#reset_button_" + oid).hide()
+                    input.data("original_value", input.val())
+                }).fail(function () {
+                    make_toast("Error", "Error editing item.")
+                });
+            }
+            else{
+                make_toast("Error", "The new content can not be empty.")
+            }
+
+
+        }
+
+        function reset_item(oid){
+            var input = $("#text_input_" + oid)
+            input.val(input.data("original_value"))
+            $("#edit_button_" + oid).hide()
+            $("#reset_button_" + oid).hide()
         }
     </script>
 {% endblock %}

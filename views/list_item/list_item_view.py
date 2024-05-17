@@ -77,7 +77,7 @@ def disable_item():
         return flask.Response(status=201)
     else:
         flask.flash("Item not found")
-        return flask.Response(status=401)
+        return flask.Response(status=400)
 
 
 @flask_login.login_required
@@ -125,3 +125,38 @@ def show_item(item_oid):
             "invites": InviteDTO.find_for_user(srp, usr.oid),
         }
         return flask.render_template("show_item.html", **data)
+
+
+@flask_login.login_required
+@list_item_blueprint.route("/edit/", methods=["POST"])
+def edit_item_content():
+    usr = UserDTO.current_user()
+    item_oid = flask.request.form.get("item_oid")
+    new_content = flask.request.form.get("new_content")
+
+    if not new_content or not item_oid:
+        return Response("Invalid request", status=400)
+
+    current_item = ListItemDTO.find(srp, int(item_oid))
+
+    if not (
+        current_item
+        and usr.oid in ListDTO.find(srp, int(current_item.parent_oid)).users_with_access
+    ):
+        return flask.response("Invalid item.", code=400)
+    if not new_content or new_content == "":
+        return flask.response("New content is empty", code=400)
+
+    edit = ListItemEditDTO(
+        parent_oid=current_item.oid,
+        user_oid=usr.oid,
+        action="edit",
+        before=current_item.content,
+        after=new_content,
+    )
+
+    current_item.content = new_content
+
+    srp.save(current_item)
+    srp.save(edit)
+    return Response(status=201)

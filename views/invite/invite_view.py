@@ -40,9 +40,15 @@ def create_invite():
 
     invitee: UserDTO = UserDTO.find_by_name(srp, invitee_name)
 
-    if not invitee or invitee.oid in current_list.users_with_access:
+    if (
+        not invitee
+        or invitee.oid in current_list.users_with_access
+        or InviteDTO.find_by_invitee_list(srp, invitee.oid, current_list.oid)
+    ):
         if not invitee:
             flask.flash("Invitee not found.")
+        elif invitee.oid in current_list.users_with_access:
+            flask.flash("Invite already sent.")
         else:
             flask.flash("User already invited.")
 
@@ -101,7 +107,7 @@ def reject_invite():
         srp.delete(invite.__oid__)
         return Response(status=201)
     else:
-        return Response(status=401)
+        return Response(status=400)
 
 
 @flask_login.login_required
@@ -120,4 +126,4 @@ def accept_invite():
         srp.delete(invite.__oid__)
         return Response(status=201)
     else:
-        return Response(status=401)
+        return Response(status=400)

@@ -42,8 +42,17 @@ class InviteDTO:
     def find(sirope: sirope.Sirope, oid: int) -> "InviteDTO":
         return sirope.find_first(InviteDTO, lambda l: l.oid == oid)
 
+    @staticmethod
     def find_for_user(sirope: sirope.Sirope, user_oid: int) -> ["InviteDTO"]:
         return [
             item
             for item in sirope.filter(InviteDTO, lambda l: user_oid == l.invitee_oid)
         ]
+
+    @staticmethod
+    def find_by_invitee_list(
+        sirope: sirope.Sirope, invitee_oid: int, list_oid: int
+    ) -> ["InviteDTO"]:
+        return sirope.find_first(
+            InviteDTO, lambda l: l.invitee_oid == invitee_oid and l.list_oid == list_oid
+        )

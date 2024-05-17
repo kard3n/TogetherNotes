@@ -27,6 +27,10 @@ class ListItemDTO:
     def content(self):
         return self._content
 
+    @content.setter
+    def content(self, value):
+        self._content = value
+
     @property
     def checked(self):
         return self._checked
