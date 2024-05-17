@@ -2,6 +2,7 @@ import flask
 import flask_login
 import sirope
 
+from model.InviteDTO import InviteDTO
 from model.ListDTO import ListDTO
 from model.ListItemDTO import ListItemDTO
 from model.UserDTO import UserDTO
@@ -29,5 +30,9 @@ def home():
 
     lists = ListDTO.find_for_user(srp, usr.oid)
 
-    data = {"lists": lists, "user": usr}
+    data = {
+        "lists": lists,
+        "user": usr,
+        "invites": InviteDTO.find_for_user(srp, usr.oid),
+    }
     return flask.render_template("home.html", **data)

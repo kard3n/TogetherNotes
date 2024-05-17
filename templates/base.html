@@ -10,6 +10,7 @@
     <body data-bs-theme="dark">
         <nav class="navbar navbar-expand-lg" >
             <div class="container-fluid">
+                <!-- Only show back button if not on home page -->
                 {% if request.path not in ["/home/"] %}
                 <button class="btn btn-primary px-3" onclick="history.back();">
                     <i class="bi bi-arrow-left img-fluid"></i>
@@ -20,6 +21,43 @@
                     </a>
                 {% endif %}
                 <a class="navbar-brand flex-grow-1 ms-3" href="/home">Do Together</a>
+
+                <!-- Dropdown for invitations -->
+                <div class="btn-group dropstart mx-3">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-chat">
+                            {% if invites%}
+                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                      {{invites|length}}
+                                      <span class="visually-hidden">unread invitations</span>
+                                  </span>
+                            {% endif %}
+                        </i>
+                        <span>Invites</span>
+                    </button>
+                    <ul class="dropdown-menu" id="invitation_dropdown">
+                        {% if invites %}
+                            {% for invite in invites %}
+                                <li id="invite_{{invite.oid}}">
+                                    <a class="dropdown-item">
+                                        {{ invite.message }}
+                                        <a class="btn btn-success" type="button" onclick="accept_invite('{{ invite.oid }}')">
+                                            <i class="bi bi-check"></i>
+                                        </a>
+                                        <button class="btn btn-danger" type="button" onclick="reject_invite('{{ invite.oid }}')">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </a>
+                                </li>
+
+                            {% endfor %}
+                        {% else%}
+                            <li><a class="dropdown-item">No invites</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Dropdown for settings and logout -->
                 <div class="nav-item dropdown-right d-flex me-1">
                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-person"></i>
@@ -45,5 +83,52 @@
 
         {% block body %}
         {% endblock %}
+
+        <div class="toast-container z-2 fixed-bottom" id="toast_container">
+            <!-- div for alerts -->
+        </div>
     </body>
+
+    <script>
+        function reject_invite(oid) {
+            var endpoint = "/invite/reject";
+            $.post(endpoint, { "oid": oid}).done(function () {
+                $("#invite_" + oid).remove()
+            }).fail(function () {
+                make_toast("Error", "Could not reject invite")
+            });
+        }
+
+        function accept_invite(oid) {
+            var endpoint = "/invite/accept";
+            $.post(endpoint, { "oid": oid}).done(function () {
+                if(location.pathname == "/home/"){
+                    window.location.reload();
+                }
+                make_toast("Alert", "Invite accepted")
+                $("#invite_" + oid).remove()
+            }).fail(function () {
+                make_toast("Error", "Could not accept invite")
+            });
+
+        }
+
+        function make_toast(title, text){
+            // try to find available id
+            let toast_name = 0
+            while($("#toast_" + toast_name).length){
+                toast_name += 1
+            }
+
+            let child = '<div id="toast_'+toast_name+'" class="toast" role="alert" aria-live="assertive" aria-atomic="true">\n' +
+                '<div class="toast-header">\n<i class="bi bi-info-lg rounded me-2"></i>\n<strong class="me-auto">'+title+'</strong>\n' +
+                '<small class="text-body-secondary">message</small>\n<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>\n</div>\n' +
+                '<div class="toast-body">\n' +text+ '\n</div>\n</div>\n'
+
+            $("#toast_container").append(child)
+            var toast = new bootstrap.Toast($("#toast_" + toast_name));
+            toast.show();
+        }
+
+    </script>
 </html>

@@ -2,6 +2,7 @@ import flask
 import flask_login
 import sirope
 
+from model.InviteDTO import InviteDTO
 from model.ListDTO import ListDTO
 from model.ListItemDTO import ListItemDTO
 from model.UserDTO import UserDTO
@@ -27,7 +28,7 @@ list_blueprint, srp = get_blprint()
 def create_list():
     usr = UserDTO.current_user()
     if flask.request.method == "GET":
-        data = {"user": usr}
+        data = {"user": usr, "invites": InviteDTO.find_for_user(srp, usr.oid)}
         return flask.render_template("create_list.html", **data)
     else:
         name = flask.request.form.get("name")
@@ -63,5 +64,10 @@ def show_list(list_id):
 
     item_list = ListItemDTO.find_for_list(srp, int(list_id))
 
-    data = {"list": current_list, "items": item_list, "user": usr}
+    data = {
+        "list": current_list,
+        "items": item_list,
+        "user": usr,
+        "invites": InviteDTO.find_for_user(srp, usr.oid),
+    }
     return flask.render_template("show_list.html", **data)

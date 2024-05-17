@@ -47,6 +47,7 @@ def register():
             return flask.redirect("/register")
 
         usr = UserDTO(email=email, password=password, name=name)
+        flask_login.login_user(usr)
         srp.save(usr)
 
-        return flask.redirect("/home", code=301)
+        return flask.redirect("/home")

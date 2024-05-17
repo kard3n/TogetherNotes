@@ -2,6 +2,8 @@ import flask_login
 import sirope
 import werkzeug.security as safe
 
+from model.InviteDTO import InviteDTO
+
 
 class UserDTO(flask_login.UserMixin):
     def __init__(self, email, password, name):
@@ -38,3 +40,7 @@ class UserDTO(flask_login.UserMixin):
     @staticmethod
     def find(sirope: sirope.Sirope, email: str) -> "UserDTO":
         return sirope.find_first(UserDTO, lambda u: u.email == email)
+
+    @staticmethod
+    def find_by_name(sirope: sirope.Sirope, name: str):
+        return sirope.find_first(UserDTO, lambda u: u.name == name)

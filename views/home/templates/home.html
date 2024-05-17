@@ -9,14 +9,21 @@
             <div class="card mb-3">
                 <div class="card-body row align-items-center">
                     <div class="col-auto text-center">
-                        {% if list.owner_oid == user.oid %}
-                            <i class="bi bi-unlock-fill"></i> <!-- Open lock icon -->
+                        {% if list.owner_oid == user.oid and list.users_with_access|length < 2 %}
+                            <i class="bi bi-person-fill-lock h3"></i>
+                        {% elif list.owner_oid == user.oid %}
+                            <i class="bi bi-person-fill-add h3"></i>
                         {% else %}
-                            <i class="bi bi-lock-fill"></i> <!-- Closed lock icon -->
+                            <i class="bi bi-people-fill h3"></i>
                         {% endif %}
                     </div>
-                    <h5 class="card-title col-auto font-weight-bold">{{ list.name }}</h5>
-                    <p class="card-text col">{{ list.description }}</p>
+                    <div class="col-auto">
+                        <h5 class="card-title col-auto font-weight-bold">{{ list.name }}</h5>
+                    </div>
+                    <div class="col-auto flex-grow-1">
+                        <p class="card-text col">{{ list.description }}</p>
+                    </div>
+
                     <div class="col-auto ml-auto text-right">
                         <a href="/list/{{ list.oid }}" class="btn btn-primary">Show</a>
                     </div>
@@ -26,7 +33,7 @@
     </div>
 
     <div class="d-flex flex-row-reverse z-2 fixed-bottom">
-        <a href="/list/create_list" class="btn btn-primary m-4"><i class="bi bi-plus-circle h2"></i></a>
+        <a href="/list/create_list" class="btn btn-primary m-4"><i class="bi bi-plus-circle h1"></i></a>
     </div>
 
 {% endblock %}

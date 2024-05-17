@@ -35,6 +35,9 @@ class ListDTO:
     def description(self):
         return self._description
 
+    def add_user_by_oid(self, user_oid: int):
+        self._users_with_access.append(user_oid)
+
     def __str__(self):
         return f'{self.creation_time}: "{self.name}"'
 

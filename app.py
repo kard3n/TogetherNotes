@@ -7,6 +7,7 @@ from flask_login import login_manager
 
 from model.UserDTO import UserDTO
 from views.home import home_view
+from views.invite import invite_view
 from views.list import list_view
 from views.list_item import list_item_view
 from views.login_register import login_view, register_view
@@ -24,6 +25,7 @@ def create_app():
     fapp.register_blueprint(list_view.list_blueprint)
     fapp.register_blueprint(list_item_view.list_item_blueprint)
     fapp.register_blueprint(home_view.home_blueprint)
+    fapp.register_blueprint(invite_view.invite_blueprint)
 
     lmanager.init_app(fapp)
     return fapp, lmanager, syrp
@@ -57,7 +59,7 @@ def get_index():
     data = {
         "usr": usr,
     }
-    return flask.render_template("index.html", **data)
+    return flask.send_from_directory(directory="static", path="index.html")
 
 
 if __name__ == "__main__":

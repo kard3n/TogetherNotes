@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Invite user{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <!--<h1>Create a new Invite</h1>-->
+        <h2>Who do you want to invite, {{ user.name }}?</h2>
+        <form action="/invite/create" method="post" class="mt-5">
+            <div class="form-floating mb-3">
+                <input type="text" id="invitee_name" name="invitee_name" class="form-control" value="{{invitee_name}}" placeholder="Invitee name" required>
+                <label for="invitee_name">Invitee:</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" id="message" name="message" class="form-control" value="{{message}}" placeholder="Message" required>
+                <label for="message">Message:</label>
+            </div>
+
+            <input type="hidden" id="list_oid" name="list_oid" value="{{ list.oid }}">
+
+            <button type="submit" class="btn btn-primary">Invite now</button>
+        </form>
+
+    </div>
+{% endblock %}

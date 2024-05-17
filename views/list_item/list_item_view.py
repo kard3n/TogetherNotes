@@ -3,6 +3,7 @@ import flask_login
 import sirope
 from flask import Response
 
+from model.InviteDTO import InviteDTO
 from model.ListDTO import ListDTO
 from model.ListItemDTO import ListItemDTO
 from model.ListItemEditDTO import ListItemEditDTO
@@ -121,5 +122,6 @@ def show_item(item_oid):
             "user": usr,
             "item": item,
             "edits_list": ListItemEditDTO.find_for_item(srp, item.oid),
+            "invites": InviteDTO.find_for_user(srp, usr.oid),
         }
         return flask.render_template("show_item.html", **data)
