@@ -2,8 +2,6 @@ import flask_login
 import sirope
 import werkzeug.security as safe
 
-from model.InviteDTO import InviteDTO
-
 
 class UserDTO(flask_login.UserMixin):
     def __init__(self, email, password, name):

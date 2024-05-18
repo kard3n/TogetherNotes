@@ -3,7 +3,7 @@ from datetime import datetime
 import sirope
 
 
-class InviteDTO:
+class InvitationDTO:
     def __init__(self, inviter_oid, invitee_oid, list_oid, message):
         self._inviter_oid = inviter_oid
         self._invitee_oid = invitee_oid
@@ -39,20 +39,35 @@ class InviteDTO:
         return f'{self.creation_time}: "{self.list_oid}"'
 
     @staticmethod
-    def find(sirope: sirope.Sirope, oid: int) -> "InviteDTO":
-        return sirope.find_first(InviteDTO, lambda l: l.oid == oid)
+    def find(sirope: sirope.Sirope, oid: int) -> "InvitationDTO":
+        return sirope.find_first(InvitationDTO, lambda l: l.oid == oid)
 
     @staticmethod
-    def find_for_user(sirope: sirope.Sirope, user_oid: int) -> ["InviteDTO"]:
+    def find_for_user(sirope: sirope.Sirope, user_oid: int) -> ["InvitationDTO"]:
         return [
             item
-            for item in sirope.filter(InviteDTO, lambda l: user_oid == l.invitee_oid)
+            for item in sirope.filter(
+                InvitationDTO, lambda l: user_oid == l.invitee_oid
+            )
         ]
 
     @staticmethod
     def find_by_invitee_list(
         sirope: sirope.Sirope, invitee_oid: int, list_oid: int
-    ) -> ["InviteDTO"]:
+    ) -> ["InvitationDTO"]:
         return sirope.find_first(
-            InviteDTO, lambda l: l.invitee_oid == invitee_oid and l.list_oid == list_oid
+            InvitationDTO,
+            lambda l: l.invitee_oid == invitee_oid and l.list_oid == list_oid,
         )
+
+    @staticmethod
+    def delete_for_list(sirope: sirope, list_oid: int) -> None:
+        invitations = [
+            invitation
+            for invitation in sirope.filter(
+                InvitationDTO, lambda l: l.list_oid == list_oid
+            )
+        ]
+
+        for invitation in invitations:
+            sirope.delete(invitation.__oid__)

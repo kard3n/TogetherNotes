@@ -3,7 +3,7 @@ import flask_login
 import sirope
 from flask import Response
 
-from model.InviteDTO import InviteDTO
+from model.InvitationDTO import InvitationDTO
 from model.ListDTO import ListDTO
 from model.UserDTO import UserDTO
 
@@ -43,7 +43,7 @@ def create_invite():
     if (
         not invitee
         or invitee.oid in current_list.users_with_access
-        or InviteDTO.find_by_invitee_list(srp, invitee.oid, current_list.oid)
+        or InvitationDTO.find_by_invitee_list(srp, invitee.oid, current_list.oid)
     ):
         if not invitee:
             flask.flash("Invitee not found.")
@@ -57,11 +57,11 @@ def create_invite():
             "list": current_list,
             "invitee_name": invitee_name,
             "message": f'Come join my to-do list "{current_list.name}"',
-            "invites": InviteDTO.find_for_user(srp, usr.oid),
+            "invites": InvitationDTO.find_for_user(srp, usr.oid),
         }
         return flask.render_template("create_invite.html", **data)
 
-    new_invite = InviteDTO(
+    new_invite = InvitationDTO(
         inviter_oid=usr.oid,
         invitee_oid=invitee.oid,
         message=(
@@ -90,7 +90,7 @@ def get_invite_page(list_id):
         "list": current_list,
         "invitee_name": "",
         "message": f'Come join my to-do list, "{current_list.name}"',
-        "invites": InviteDTO.find_for_user(srp, usr.oid),
+        "invites": InvitationDTO.find_for_user(srp, usr.oid),
     }
     return flask.render_template("create_invite.html", **data)
 
@@ -101,7 +101,7 @@ def reject_invite():
     usr = UserDTO.current_user()
 
     invite_oid = flask.request.form.get("oid")
-    invite = InviteDTO.find(srp, int(invite_oid))
+    invite = InvitationDTO.find(srp, int(invite_oid))
 
     if invite and invite.invitee_oid == usr.oid:
         srp.delete(invite.__oid__)
@@ -116,7 +116,7 @@ def accept_invite():
     usr = UserDTO.current_user()
 
     invite_oid = flask.request.form.get("oid")
-    invite = InviteDTO.find(srp, int(invite_oid))
+    invite = InvitationDTO.find(srp, int(invite_oid))
 
     if invite and invite.invitee_oid == usr.oid:
         current_list = ListDTO.find(srp, invite.list_oid)

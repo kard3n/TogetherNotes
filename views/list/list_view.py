@@ -2,9 +2,10 @@ import flask
 import flask_login
 import sirope
 
-from model.InviteDTO import InviteDTO
+from model.InvitationDTO import InvitationDTO
 from model.ListDTO import ListDTO
 from model.ListItemDTO import ListItemDTO
+from model.ListItemEditDTO import ListItemEditDTO
 from model.UserDTO import UserDTO
 
 
@@ -28,7 +29,7 @@ list_blueprint, srp = get_blprint()
 def create_list():
     usr = UserDTO.current_user()
     if flask.request.method == "GET":
-        data = {"user": usr, "invites": InviteDTO.find_for_user(srp, usr.oid)}
+        data = {"user": usr, "invites": InvitationDTO.find_for_user(srp, usr.oid)}
         return flask.render_template("create_list.html", **data)
     else:
         name = flask.request.form.get("name")
@@ -68,6 +69,35 @@ def show_list(list_id):
         "list": current_list,
         "items": item_list,
         "user": usr,
-        "invites": InviteDTO.find_for_user(srp, usr.oid),
+        "invites": InvitationDTO.find_for_user(srp, usr.oid),
     }
     return flask.render_template("show_list.html", **data)
+
+
+@flask_login.login_required
+@list_blueprint.route("/delete/", methods=["GET", "POST"])
+def delete_list():
+    usr = UserDTO.current_user()
+
+    oid = flask.request.form.get("oid")
+
+    if not oid:
+        return flask.Response("No list ID provided", status=400)
+
+    current_list = ListDTO.find(srp, int(oid))
+
+    if not current_list or current_list.owner_oid != usr.oid:
+        return flask.Response(
+            "List doesn't exist or user is not the owner.", status=400
+        )
+
+    # delete all list items and their edits
+    list_items = ListItemDTO.find_for_list(srp, current_list.oid)
+    for item in list_items:
+        ListItemEditDTO.delete_for_item(srp, item.oid)
+        srp.delete(item.__oid__)
+
+    # delete pending invitations
+    InvitationDTO.delete_for_list(srp, current_list.oid)
+
+    return flask.Response("List deleted successfully", status=201)
