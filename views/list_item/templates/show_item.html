@@ -4,26 +4,46 @@
 {% block body %}
     <div class="container">
         <h1 class="my-4">History for "{{ item.content }}"</h1>
-        <div class="card card-body">
             <ul class="list-group">
                 {% for edit in edits_list %}
                         <li class="list-group-item" id="item_{{ edit.oid }}">
-                            {{user.name}}: {{edit.creation_time}}, {{edit.action}}.
-                            {% if edit.before != None %}
-                                {{ edit.before }}
-                            {% else %}
-                                None
-                            {% endif %}
-                            -->
-                            {% if edit.after != None %}
-                                {{ edit.after }}
-                            {% else %}
-                                None
-                            {% endif %}
+                            <div class="d-flex flex-column mb-3 d-flex">
+                                <div class="p-2 d-flex align-items-center me-3">
+                                    <i class="bi bi-person-circle h3 me-3"></i>
+                                    <h5>{{user.name}}</h5>
+                                </div>
+                                <div class="p-2 d-flex align-items-center me-3">
+                                    <i class="bi bi-globe h3 me-3"></i>
+                                    <h6>{{edit.creation_time.strftime('%A %d-%m-%Y at %H:%M')}}</h6>
+                                </div>
+                                <div class="p-2 d-flex align-items-center me-3">
+                                    <i class="bi bi-lightning-fill h3 me-3"></i>
+                                    <h6>{{edit.action}}</h6>
+                                </div>
+                                {% if edit.before != None or edit.after != None %}
+                                    <div class="p-2 d-flex align-items-center me-3">
+                                        <i class="bi bi-pen h3 align-items-center me-3"></i>
+                                        <h6>
+                                            {% if edit.before != None %}
+                                                "{{ edit.before }}"
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                            <i class="bi bi-arrow-right mx-2 fs-5"></i>
+                                            {% if edit.after != None %}
+                                                "{{ edit.after }}"
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </h6>
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
                         </li>
                 {% endfor %}
             </ul>
         </div>
 
-    </div>
 {% endblock %}

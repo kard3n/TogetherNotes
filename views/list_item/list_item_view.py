@@ -81,6 +81,24 @@ def disable_item():
 
 
 @flask_login.login_required
+@list_item_blueprint.route("/delete/", methods=["POST"])
+def delete_item():
+    usr = UserDTO.current_user()
+    item_oid = flask.request.form.get("oid")
+
+    item = ListItemDTO.find(srp, int(item_oid))
+    parent_list = ListDTO.find(srp, item.parent_oid) if item else []
+
+    if item and usr.oid in parent_list.users_with_access:
+        ListItemEditDTO.delete_for_item(srp, item.oid)
+        srp.delete(item.__oid__)
+        return flask.Response(status=201)
+    else:
+        flask.flash("Item not found or access denied.")
+        return flask.Response(status=400)
+
+
+@flask_login.login_required
 @list_item_blueprint.route("/check/", methods=["POST"])
 def check_item():
     usr = UserDTO.current_user()

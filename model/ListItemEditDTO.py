@@ -68,5 +68,23 @@ class ListItemEditDTO:
         ]
 
     @staticmethod
+    def delete_for_item(sirope: sirope.Sirope, item_oid: int):
+        """
+        Deleted all edits for the item with oid "item_oid
+        :param sirope:
+        :param oid:
+        :return:
+        """
+        edit_list = [
+            item
+            for item in sirope.filter(
+                ListItemEditDTO, lambda l: l.parent_oid == item_oid
+            )
+        ]
+
+        for item in edit_list:
+            sirope.delete(item.__oid__)
+
+    @staticmethod
     def find(sirope: sirope.Sirope, oid: int) -> "ListItemEditDTO":
         return sirope.find_first(ListItemEditDTO, lambda l: l.oid == oid)
