@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
+{% block previous_page %}/home/{% endblock %}
 
 {% block body %}
     <div class="container">
         <h1 class="my-4">Hello, {{ user.name }}</h1>
         <h3>How are you today?</h3>
         {% for list in lists %}
-            <div class="card mb-3">
-                <div class="card-body row align-items-center" id="list_{{ list.oid }}">
+            <div class="card mb-3" id="list_{{ list.oid }}">
+                <div class="card-body row align-items-center">
                     <div class="col-auto text-center">
                         {% if list.owner_oid == user.oid and list.users_with_access|length < 2 %}
                             <i class="bi bi-person-fill-lock h3"></i>

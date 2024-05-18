@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}List: {{ list.name }}{% endblock %}
+{% block previous_page %}/home/{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="d-flex align-items-center"> <!-- Name and share button -->
-            <h1 class="my-4 d-inline ">{{ list.name }}:</h1>
-            <h3 class="text-body-secondary ps-3 pt-2 mb-0 align-self-center flex-grow-1">{{ list.description }} </h3>
+            <h1 class="my-4 d-inline " id="list_name">{{ list.name }}:</h1>
+            <h3 class="text-body-secondary ps-3 pt-2 mb-0 align-self-center flex-grow-1" id="list_description">{{ list.description }} </h3>
+            {% if user.oid == list.owner_oid %}
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#listEditModal">
+                    <i class="bi bi-pencil-square h3"></i>
+                </button>
+            {% endif %}
         </div>
 
         <div class="card card-body">
@@ -99,6 +105,37 @@
         {% endif %}
     </div>
 
+    <!-- modal for list editing -->
+    <div class="modal fade" tabindex="-1" id="listEditModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit list name and description</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="mt-5">
+                        <div class="form-floating mb-3">
+                            <input type="text" id="new_name" name="new_name" class="form-control" placeholder="Name" maxlength="25" value="{{ list.name }}" required>
+                            <label for="new_name">Name</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" id="new_description" name="new_description" class="form-control" placeholder="Description" maxlength="50" value="{{ list.description }}" required>
+                            <label for="new_description">Description</label>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="edit_list('{{list.oid}}')">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         function check(oid, checked) {
             var endpoint = "/list_item/check/";
@@ -149,8 +186,8 @@
         }
 
         function edit(oid) {
-            var endpoint = "/list_item/edit/";
-            var input = $("#text_input_" + oid)
+            let endpoint = "/list_item/edit/";
+            let input = $("#text_input_" + oid)
 
 
             if(input.val() != ""){
@@ -170,10 +207,31 @@
         }
 
         function reset_item(oid){
-            var input = $("#text_input_" + oid)
+            let input = $("#text_input_" + oid)
             input.val(input.data("original_value"))
             $("#edit_button_" + oid).hide()
             $("#reset_button_" + oid).hide()
+        }
+
+        function edit_list(oid){
+            const endpoint = "/list/edit/";
+            let name_input = $("#new_name")
+            let description_input = $("#new_description")
+
+            if(name_input.val() != ""){
+                $.post(endpoint, { "oid": oid, "name": name_input.val(), "description": description_input.val()}).done(function () {
+                    $("#list_name").html(name_input.val())
+                    $("#list_description").html(description_input.val())
+
+                }).fail(function () {
+                    make_toast("Error", "Error editing modal.")
+                }).always(function (){
+                    $("#listEditModal").modal("hide")
+                });
+            }
+            else{
+                make_toast("Error", "Empty names are not allowed.")
+            }
         }
     </script>
 {% endblock %}

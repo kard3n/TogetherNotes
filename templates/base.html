@@ -19,9 +19,9 @@
             <div class="container-fluid">
                 <!-- Only show back button if not on home page -->
                 {% if request.path not in ["/home/"] %}
-                <button class="btn btn-primary px-3" onclick="history.back();">
+                <a class="btn btn-primary px-3" href="{% block previous_page %}{% endblock %}">
                     <i class="bi bi-arrow-left img-fluid"></i>
-                </button>
+                </a>
                 {% else %}
                     <a class="btn btn-primary px-3" href="/home/">
                         <i class="bi bi-house"></i>

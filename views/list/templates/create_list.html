@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}New List{% endblock %}
+{% block previous_page %}/home/{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
@@ -7,11 +8,11 @@
         <h2>Time for a new list, {{ user.name }}?</h2>
         <form action="/list/create_list" method="post" class="mt-5">
             <div class="form-floating mb-3">
-                <input type="text" id="name" name="name" class="form-control" placeholder="Name of the list" required>
+                <input type="text" id="name" name="name" class="form-control" placeholder="Name of the list" maxlength="25" required>
                 <label for="name">Name</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" id="description" name="description" class="form-control" placeholder="Description" required>
+                <input type="text" id="description" name="description" class="form-control" placeholder="Description" maxlength="50" required>
                 <label for="description">Short description</label>
             </div>
 

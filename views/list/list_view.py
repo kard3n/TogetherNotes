@@ -100,4 +100,34 @@ def delete_list():
     # delete pending invitations
     InvitationDTO.delete_for_list(srp, current_list.oid)
 
+    srp.delete(current_list.__oid__)
+
     return flask.Response("List deleted successfully", status=201)
+
+
+@flask_login.login_required
+@list_blueprint.route("/edit/", methods=["GET", "POST"])
+def edit_list():
+    usr = UserDTO.current_user()
+
+    name = flask.request.form.get("name")
+    description = flask.request.form.get("description") or ""
+    oid = flask.request.form.get("oid")
+
+    if not name:
+        return flask.Response("The name can not be empty", status=400)
+
+    if not oid:
+        return flask.Response("The oid can not be empty", status=400)
+
+    current_list = ListDTO.find(srp, int(oid))
+
+    if not current_list or current_list.owner_oid != usr.oid:
+        return flask.Response("List not found or access denied", status=400)
+
+    current_list.name = name
+    current_list.description = description
+
+    srp.save(current_list)
+
+    return flask.Response("List edited successfully", status=201)

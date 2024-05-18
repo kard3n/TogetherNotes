@@ -19,6 +19,10 @@ class ListDTO:
     def name(self):
         return self._name
 
+    @name.setter
+    def name(self, value):
+        self._name = value
+
     @property
     def creation_time(self):
         return self._creation_time
@@ -34,6 +38,10 @@ class ListDTO:
     @property
     def description(self):
         return self._description
+
+    @description.setter
+    def description(self, value):
+        self._description = value
 
     def add_user_by_oid(self, user_oid: int):
         self._users_with_access.append(user_oid)

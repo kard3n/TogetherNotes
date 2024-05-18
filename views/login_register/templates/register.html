@@ -6,15 +6,15 @@
         <h1 class="text-center">Register</h1>
         <form action="/register" method="post" class="mt-5">
             <div class="form-floating mb-3">
-                <input type="text" id="username" name="username" class="form-control" placeholder="Name" required>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Name" maxlength="25" required>
                 <label for="username">Name</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="email" id="email" name="email" class="form-control" placeholder="Name" required>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Name" maxlength="100" required>
                 <label for="email">Email</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" id="password" name="password" class="form-control" placeholder="Name" required>
+                <input type="text" id="password" name="password" class="form-control" placeholder="Name" maxlength="32" required>
                 <label for="password">Password</label>
             </div>
 
