@@ -20,7 +20,7 @@
                                 <div class="col-12">
                                     <label class="visually-hidden" for="text_input_{{ item.oid }}">Content</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="text_input_{{ item.oid }}" placeholder="Something to do" onKeyUp="activate_edit('{{ item.oid }}')" data-original_value="{{ item.content }}" value="{{ item.content }}">
+                                        <input type="text" class="form-control" id="text_input_{{ item.oid }}" placeholder="Something to do" onKeyUp="add_submit_button_if_content_change('{{ item.oid }}')" data-original_value="{{ item.content }}" value="{{ item.content }}">
                                         <div class="input-group-text btn btn-danger" id="reset_button_{{ item.oid }}" onclick="reset_item('{{ item.oid }}')" style="display:none;">
                                             <i class="bi bi-arrow-clockwise"></i>
                                         </div>
@@ -120,9 +120,16 @@
 
         }
 
-        function activate_edit(oid) {
-            $("#edit_button_" + oid).show()
-            $("#reset_button_" + oid).show()
+        function add_submit_button_if_content_change(oid) {
+            if($("#text_input_" + oid).val() == $("#text_input_" + oid).data("original_value")){
+                $("#edit_button_" + oid).hide()
+                $("#reset_button_" + oid).hide()
+            }
+            else{
+                $("#edit_button_" + oid).show()
+                $("#reset_button_" + oid).show()
+            }
+
         }
 
         function edit(oid) {

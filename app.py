@@ -1,4 +1,5 @@
 import json
+import os
 
 import flask
 import flask_login
@@ -60,6 +61,16 @@ def get_index():
         "usr": usr,
     }
     return flask.send_from_directory(directory="static", path="index.html")
+
+
+@app.route("/static/<filename>")
+def get_from_static_favicon(filename):
+    """
+    Serves files from the static directory
+    :param filename:
+    :return:
+    """
+    return flask.send_from_directory(directory="static", path=filename)
 
 
 if __name__ == "__main__":
