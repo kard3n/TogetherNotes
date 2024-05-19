@@ -4,21 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DoTogether</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icon_32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icon_16.png">
+    <link href="/static/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="/static/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/static/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body>
-<div class="container">
-    <div class="jumbotron mt-3">
-        <h1 class="display-4">DoTogether</h1>
-        <p class="lead">Do it together. Sharing tasks has never been easier.</p>
-        <hr class="my-4">
-        <a class="btn btn-primary btn-lg" href="/register" role="button">Register</a>
-        <a class="btn btn-secondary btn-lg" href="/login" role="button">Login</a>
+<body data-bs-theme="dark" style="height: 100vh">
+<div class="container d-flex align-items-center justify-content-center" style="height: 100%;">
+    <div class="card text-bg-secondary" style="max-width: 40rem;">
+        <div class="card-body">
+            <h1 class="display-4">DoTogether</h1>
+            <p class="lead">Do it together. Sharing tasks has never been easier.</p>
+            <hr class="my-4">
+            <a class="btn btn-primary" href="/register" role="button">Register</a>
+            <a class="btn btn-primary" href="/login" role="button">Login</a>
+        </div>
     </div>
 </div>
-<!-- Bootstrap JS and jQuery -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
 </body>
 </html>
