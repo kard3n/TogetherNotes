@@ -47,10 +47,10 @@
                             {% for invite in invites %}
                                 <li id="invite_{{invite.oid}}">
                                     <a class="dropdown-item">
-                                        {{ invite.message }}
-                                        <a class="btn btn-success" type="button" onclick="accept_invite('{{ invite.oid }}')">
+                                        <span>{{ invite.message }}</span>
+                                        <button class="btn btn-success" type="button" onclick="accept_invite('{{ invite.oid }}')">
                                             <i class="bi bi-check"></i>
-                                        </a>
+                                        </button>
                                         <button class="btn btn-danger" type="button" onclick="reject_invite('{{ invite.oid }}')">
                                             <i class="bi bi-x"></i>
                                         </button>
