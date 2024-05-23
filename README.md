@@ -1,5 +1,6 @@
  
 # DoTogether
+Application for sharing to-do lists.
 
 ## Installation and Startup
 For the app to be able to start `redis` must be installed and running.
